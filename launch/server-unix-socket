@@ -1,0 +1,178 @@
+#! /bin/sh
+# /etc/init.d/server-unix-socket: start the server unix socket daemon.
+
+# chkconfig: - 88 20 20
+# description: unix socket server
+
+SERVER_HOME=/home/solenkov.v/SUNIXS/launch
+SERVER_USER=root
+SERVER_SCRIPT=$SERVER_HOME/start_server_unix_socket.sh
+#SERVER_CONFIG=$SERVER_HOME/config/server.properties
+SERVER_CONSOLE_LOG=/var/log/server_unix_socket/console.log
+
+PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
+
+prog=server-unix-socket
+DESC="server-unix-socket daemon"
+
+#RETVAL=0
+STARTUP_WAIT=10
+SHUTDOWN_WAIT=10
+
+SERVER_PIDFILE=/tmp/server-unix-socket/lock
+
+
+# Source function library.
+. /etc/init.d/functions
+
+start() {
+  echo -n $"Starting $prog: "
+  echo ""
+
+        # Create pid file
+#       if [ -f $SERVER_PIDFILE ]; then
+#               read ppid < $SERVER_PIDFILE
+#               if [ `ps --pid $ppid 2> /dev/null | grep -c $ppid 2> /dev/null` -eq '1' ]; then
+#                       echo -n "$prog is already running"
+#                       failure
+#                       echo
+#                       return 1
+#               else
+#                     rm -f $SERVER_PIDFILE
+#               fi
+#       fi
+
+#       rm -f $SERVER_CONSOLE_LOG
+#       mkdir -p $(dirname $SERVER_PIDFILE)
+#       chown $SERVER_USER $(dirname $SERVER_PIDFILE) || true
+  
+        # Run daemon
+        cd $SERVER_HOME
+        nohup sh $SERVER_SCRIPT 2>&1 >> $SERVER_CONSOLE_LOG 2>&1 &
+#       PID=$!
+#       echo $PID > $SERVER_PIDFILE
+        
+        count=0
+        launched=false
+  
+        until [ $count -gt $STARTUP_WAIT ]
+        do
+                grep 'started' $SERVER_CONSOLE_LOG > /dev/null
+                if [ $? -eq 0 ] ; 
+			then
+                        	launched=true
+                        	break
+                fi
+                sleep 1
+                let count=$count+1;
+        done
+  
+        success
+        echo
+        return 0
+}
+
+
+stop() {
+        echo -n $"Stopping $prog: "
+        echo ""
+        count=0;
+
+        if [ -f $SERVER_PIDFILE ]; then
+                read kpid < $SERVER_PIDFILE
+                let kwait=$SHUTDOWN_WAIT
+
+                # Try issuing SIGTERM
+                kill -2 $kpid
+                until [ `ps --pid $kpid 2> /dev/null | grep -c $kpid 2> /dev/null` -eq '0' ] || [ $count -gt $kwait ]
+                        do
+                        sleep 1
+                        let count=$count+1;
+                done
+
+                if [ $count -gt $kwait ]; then
+                        kill -9 $kpid
+                fi
+        fi
+
+        rm -f $SERVER_PIDFILE
+        rm -f $SERVER_CONSOLE_LOG
+        success
+        echo
+}
+
+reload() {
+       if [ -f $SERVER_PIDFILE ]; then
+               read ppid < $SERVER_PIDFILE
+               if [ `ps --pid $ppid 2> /dev/null | grep -c $ppid 2> /dev/null` -eq '1' ]; then
+		       kill -12 $ppid
+                       echo -n "Reload configuration of $prog ...|pid:$ppid|"
+        	       success
+                       echo ""
+                       return 0
+               else
+                       echo -n "$prog not responding |pid:$ppid|"
+                       failure
+                       echo ""
+                       rm -f $SERVER_PIDFILE
+                       return 1
+               fi
+	else
+	       echo -n "$prog not running"
+               failure
+               echo ""
+               return 1
+	fi
+}
+
+restart() {
+        stop
+        start
+}
+
+status() {
+        if [ -f $SERVER_PIDFILE ]; then
+                read ppid < $SERVER_PIDFILE
+                if [ `ps --pid $ppid 2> /dev/null | grep -c $ppid 2> /dev/null` -eq '1' ]; then
+                        echo "$prog is running |pid:$ppid|"
+        		success
+                        echo ""
+                        return 0
+                else
+                        echo "$prog dead but pid file exists |pid:$ppid|"
+                        return 1
+                fi
+        fi
+        echo "$prog is not running"
+        failure
+        echo ""
+        return 3
+}
+
+case "$1" in
+start)
+        start
+        ;;
+
+stop)
+        stop
+        ;;
+
+reload)
+        reload
+        ;;
+
+restart)
+        restart
+        ;;
+
+status)
+        status
+        ;;
+*)
+
+echo $"Usage: $0 {start|stop|reload|restart|status}"
+exit 1
+esac
+  
+exit $?
