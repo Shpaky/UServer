@@ -27,3 +27,14 @@
 		'USR1' => 'allowable',
 		'USR2' => 'allowable'
 	};
+
+	$applications =
+	{
+		'HPVF'	=>
+		{
+			'module' => 'ROUTING',
+			'method' => 'navigation',
+			'catalog'=> '/home/solenkov.v/NHPVF'
+		},
+	};
+1;

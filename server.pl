@@ -69,6 +69,8 @@
 			$SIG{INT} = 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
+			&SERVER::init_application();
+
 			while ( $conn = $server->accept() )
 			{
 				my $request = <$conn>;
