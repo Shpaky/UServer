@@ -41,7 +41,7 @@ EOC
 				shift;
 				\@_ = (join '', \@_);
 				\&LogNot:\:$function;
-				\&LogNot:\:log_notice;
+				\&LogNot:\:not_notice;
 			}
 EOC
 		}
