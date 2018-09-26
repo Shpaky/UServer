@@ -69,14 +69,16 @@
 		while (( $UNIX_SOCKET::pid = waitpid(-1,WNOHANG)) > 0)
 		{
 			$log->error('Уничтожен потомок, процесс сервер упал!'.'|'.$UNIX_SOCKET::pid.'|');
-			last;
+	#		last;
 		}
 		$UNIX_SOCKET::SIG{CHLD} = \&REAPER;
 	}
 	sub INT
 	{
+		$log->warn('Получен сигнал '.'|'.$_[0].'|'.' завершения работы сервера, процесс'.'|'.$$.'|');
 		local($SIG{CHLD}) = 'IGNORE';
-		kill 'INT' => keys %$UNIX_SOCKET::childrens;
+		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep { kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
+		$log->warn('Процесс сервер остановлен, процесс'.'|'.$$.'|');
 		exit;
 	}
 	sub CHLD
@@ -131,9 +133,9 @@
 		my $sigset = POSIX::SigSet->new($_[0]);
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для форка: $!\n";
 
-		$log->info('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');
+		$log->warn('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');
 		no CONFIG;
-		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->error('Уничтожен потомок, процесс сервер упал!'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
+		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
 		use CONFIG;
 
 		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для форка: $!\n";
@@ -143,12 +145,12 @@
 		
 		if ( $UNIX_SOCKET::pid && kill_pid(0,$UNIX_SOCKET::pid) )
 		{   	
-			$log->info('Проверка потомка, процесс чекер-соединений существует!'.'|'.$UNIX_SOCKET::pid.'|');
+			$log->info('Проверка потомка, процесс чекер-соединений существует'.'|'.$UNIX_SOCKET::pid.'|');
 			return;
 		} 
 		else 
 		{
-			$log->error('Проверка потомка, процесс чекер-соединений не существует!'.'|'.$UNIX_SOCKET::pid.'|');
+			$log->warn('Проверка потомка, процесс чекер-соединений не существует!'.'|'.$UNIX_SOCKET::pid.'|');
 			if ( $UNIX_SOCKET::pid = fork() ) 
 			{ 
 

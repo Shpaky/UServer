@@ -12,7 +12,8 @@
 	{ 
 		log_debug 	=> [qw/debug/],
 		log_info 	=> [qw/info inform/],
-		log_warn 	=> [qw/notice warn warning/],
+		log_warn 	=> [qw/warn warning/],
+		log_notice 	=> [qw/notice/],
 		log_error	=> [qw/err error fatal crit critical alert emergency/], 
 		not_error	=> [qw/errnot/],
 	}; 		
@@ -32,7 +33,7 @@
 			}		 
 EOC
 		} 
-		elsif ( $function eq 'log_warn' )
+		elsif ( $function eq 'log_notice' )
 		{
 			$code = <<EOC;
 			sub
@@ -40,7 +41,7 @@ EOC
 				shift;
 				\@_ = (join '', \@_);
 				\&LogNot:\:$function;
-				\&LogNot:\:not_warn;
+				\&LogNot:\:log_notice;
 			}
 EOC
 		}
