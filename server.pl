@@ -35,7 +35,10 @@
 	&SERVER::locked_open($CONFIG::path->{'lock'});
 	&SERVER::init_server();
 	&SERVER::init_sig_handler(['CHLD','INT','USR1','USR2']);
+	&SERVER::init_application();
 
+
+	&{$CONFIG::applications->{'HPVF'}->{'module'}.'::'.$CONFIG::applications->{'HPVF'}->{'method'}};
 
 	$UNIX_SOCKET::q = 0;
 	$UNIX_SOCKET::children = 0;
@@ -69,7 +72,7 @@
 			$SIG{INT} = 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
-			&SERVER::init_application();
+#			&SERVER::init_application();
 
 			while ( $conn = $server->accept() )
 			{

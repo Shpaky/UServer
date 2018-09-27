@@ -65,20 +65,21 @@
 		my $pack = caller();
 		map {
 			&SERVER::connect_module($CONFIG::applications->{$_}) and
-			lc(ref(\&{$CONFIG::applications->{$_}->{'method'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
-			$UNIX_SOCKET::application->{$_} = \&{$CONFIG::applications->{$_}->{'method'}.'::'.$CONFIG::applications->{$_}->{'method'}}
+			lc(ref(\&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
+			$UNIX_SOCKET::application->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}}
 			? ( $log->info('Приложение '.'|'.$_.'|'.' подключено, процесс'.'|'.$$.'|') )
 			: ( $log->warn('Не удалось подлючить приложение '.'|'.$_.'|'.', процесс'.'|'.$$.'|') )
 		} grep { $log->info('Подключение приложения '.'|'.$_.'|'.', процесс'.'|'.$$.'|') } keys %$CONFIG::applications;
 	}
 	sub connect_module
 	{
-		chdir($_[0]->{'catalog'});
+		push @INC, $_[0]->{'catalog'};
+		push @INC, $_[0]->{'libraly'};
 
 		$_[0]->{'module'} !~ /^[a-z0-9:_\-]+$/i and $log->warn('Не допустимое имя модуля'.'|'.$_[0]->{'module'}.'|') and return;
 
 		my $module = $_[0]->{'module'};
-		while ( $module =~ /(.*)(::[a-z0-9_\-]+)$/i )
+		while ( $module =~ /(.*)(::[a-z0-9_\-]+)|[a-z0-9_\-]+$/i )
 		{
 			my $up_pack = $1;
 
@@ -86,10 +87,14 @@
 			$filename =~ s|::+|/|g;
 			$filename =~ /\.pm$/ or $filename .= '.pm';
 
-			exists($INC{$filename}) or ( -f $filename && eval('require '.$module.';') ) or ( delete($INC{$filename}), $log->warn('Ошибка подключения файла модуля'.'|'.$filename.'|'.', ошибка'.'|'.$!.':'.$@.'|'), return );
+			exists($INC{$filename}) or ( -f $_[0]->{'catalog'}.'/'.$filename && eval('require '.$module.';') ) or ( delete($INC{$filename}), $log->warn('Ошибка подключения файла модуля'.'|'.$filename.'|'.', ошибка'.'|'.$!.':'.$@.'|'), return );
 			$module = $up_pack;
 		}
 		return $module;
+	}
+	sub call_application
+	{
+		1;
 	}
 	sub check_allowable_signals
 	{

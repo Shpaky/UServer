@@ -34,7 +34,8 @@
 		{
 			'module' => 'ROUTING',
 			'method' => 'navigation',
-			'catalog'=> '/home/solenkov.v/NHPVF'
+			'catalog'=> '/home/solenkov.v/NHPVF',
+			'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
 		},
 	};
 1;
