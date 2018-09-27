@@ -64,9 +64,11 @@
 	{
 		my $pack = caller();
 		map {
-			&SERVER::connect_module($CONFIG::applications->{$_}) and
-			lc(ref(\&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
-			$UNIX_SOCKET::application->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}}
+			(
+			  &SERVER::connect_module($CONFIG::applications->{$_}) and
+			  lc(ref(\&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
+			  $SERVER::applications->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}}
+			)
 			? ( $log->info('Приложение '.'|'.$_.'|'.' подключено, процесс'.'|'.$$.'|') )
 			: ( $log->warn('Не удалось подлючить приложение '.'|'.$_.'|'.', процесс'.'|'.$$.'|') )
 		} grep { $log->info('Подключение приложения '.'|'.$_.'|'.', процесс'.'|'.$$.'|') } keys %$CONFIG::applications;
@@ -90,11 +92,14 @@
 			exists($INC{$filename}) or ( -f $_[0]->{'catalog'}.'/'.$filename && eval('require '.$module.';') ) or ( delete($INC{$filename}), $log->warn('Ошибка подключения файла модуля'.'|'.$filename.'|'.', ошибка'.'|'.$!.':'.$@.'|'), return );
 			$module = $up_pack;
 		}
-		return $module;
+		return !$module;
 	}
 	sub call_application
 	{
-		1;
+		map {
+			chdir($CONFIG::applications->{$_}->{'catalog'});
+			$SERVER::applications->{$_}->({ route => 'route_test', argv => [], 'env' => \%ENV })
+		} keys %$CONFIG::applications;
 	}
 	sub check_allowable_signals
 	{
