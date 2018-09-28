@@ -60,6 +60,10 @@
 		my $pack = caller();
 		map { $SIG{$_} = \&{'SERVER'.'::'.$_} } grep { &check_allowable_signals($_) } @{$_[0]};
 	}
+	sub check_allowable_signals
+	{
+		return $CONFIG::signals->{$_[0]};
+	}
 	sub init_application
 	{
 		my $pack = caller();
@@ -96,14 +100,15 @@
 	}
 	sub call_application
 	{
-		map {
-			chdir($CONFIG::applications->{$_}->{'catalog'});
-			$SERVER::applications->{$_}->({ route => 'route_test', argv => [], 'env' => \%ENV })
-		} keys %$CONFIG::applications;
-	}
-	sub check_allowable_signals
-	{
-		return $CONFIG::signals->{$_[0]};
+		given ($CONFIG::navigation->{decode_json($_[0])->{'route'}})
+		{
+			when ('HPVF')
+			{
+				chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
+				$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
+				$SERVER::applications->{'HPVF'}->(decode_json($_[0]))
+			}
+		}
 	}
 	sub REAPER
 	{

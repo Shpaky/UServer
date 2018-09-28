@@ -38,4 +38,9 @@
 			'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
 		},
 	};
+
+	$navigation =
+	{
+		'test_multiple_invoke' => 'HPVF',
+	};
 1;
