@@ -74,6 +74,7 @@
 				my $request = <$conn>;
 				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$UNIX_SOCKET::q.'|');
 				&SERVER::call_application($request);
+				&SERVER::init_log();
 			}
 		}
 	}

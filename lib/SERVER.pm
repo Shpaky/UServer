@@ -110,6 +110,11 @@
 			}
 		}
 	}
+	sub init_log
+	{
+		my $log = $_[0] || $CONFIG::path->{'conf_log'};
+		Log::Log4perl->init($log);
+	}
 	sub REAPER
 	{
 		while (( $UNIX_SOCKET::pid = waitpid(-1,WNOHANG)) > 0)
