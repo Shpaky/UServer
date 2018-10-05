@@ -185,6 +185,7 @@
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для форка: $!\n";
 
 		$log->warn('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');
+		$UNIX_SOCKET::SIG{CHLD} = 'IGNORE';
 		no CONFIG;
 		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
 		use CONFIG;
