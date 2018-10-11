@@ -68,6 +68,8 @@
 		{
 			$SIG{INT} = 'DEFAULT';
 			$SIG{CHLD}= 'DEFAULT';
+			$SIG{USR1}= 'DEFAULT';
+			$SIG{USR2}= 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
 			while ( $conn = $server->accept() )
