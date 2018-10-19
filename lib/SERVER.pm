@@ -135,16 +135,16 @@
 	sub CHLD
 	{
 		my $sigset = POSIX::SigSet->new($_[0]);
-		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для форка: $!\n";
+		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
 		$UNIX_SOCKET::SIG{CHLD} = 'IGNORE';
 		&REAPER;
 
-		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для форка: $!\n";
+		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
 	}
 	sub USR1
 	{
-		$_[1] > 0 || ( my $sigset = POSIX::SigSet->new($_[0]) and sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для форка: $!\n" );
+		$_[1] > 0 || ( my $sigset = POSIX::SigSet->new($_[0]) and sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n" );
 
 		local $SIG{PIPE} = &PIPE;
 		$_[1] > 0 || $log->info('Получен сигнал от мониторинга, процесс'.'|'.$$.'|');
@@ -172,7 +172,7 @@
 			}
 		}
 
-		$_[1] > 0 || sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для форка: $!\n";
+		$_[1] > 0 || sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
 	}
 	sub PIPE
 	{
@@ -182,7 +182,7 @@
 	sub USR2
 	{
 		my $sigset = POSIX::SigSet->new($_[0]);
-		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для форка: $!\n";
+		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
 		$log->warn('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');
 		$UNIX_SOCKET::SIG{CHLD} = 'IGNORE';
@@ -190,7 +190,7 @@
 		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
 		use CONFIG;
 
-		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для форка: $!\n";
+		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
 	}
 	sub loop 
 	{
