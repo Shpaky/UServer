@@ -43,7 +43,7 @@
 				sleep 1;
 				if ( my $child = open STDIN, '-|' )
 				{
-					local $SIG{CHILD} = 'IGNORE';
+					local $SIG{CHLD} = 'IGNORE';
 					my $resp;
 					sleep 1;
 					&SERVER::kill_pid('TERM',$child);
