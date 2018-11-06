@@ -46,6 +46,7 @@
 		'assemble_project_by_type_with_multiple_subprojects' => 'HPVF',
 		'move_2_home_project' => 'HPVF',
 		'publish_project' => 'HPVF',
-		'synchronization_project' => 'HPVF'
+		'synchronization_project' => 'HPVF',
+		'rename_sources_files' => 'HPVF'
 	};
 1;
