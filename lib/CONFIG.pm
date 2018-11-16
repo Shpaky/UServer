@@ -48,5 +48,6 @@
 		'publish_project' => 'HPVF',
 		'synchronization_project' => 'HPVF',
 		'rename_sources_files' => 'HPVF'
+		'unpublish_project' => 'HPVF',
 	};
 1;
