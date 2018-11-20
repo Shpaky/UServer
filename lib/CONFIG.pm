@@ -47,7 +47,9 @@
 		'move_2_home_project' => 'HPVF',
 		'publish_project' => 'HPVF',
 		'synchronization_project' => 'HPVF',
-		'rename_sources_files' => 'HPVF'
+		'rename_sources_files' => 'HPVF',
 		'unpublish_project' => 'HPVF',
+		'check_publish_project' => 'HPVF',
+		'fetch_main_uuid_from_project' => 'HPVF',
 	};
 1;
