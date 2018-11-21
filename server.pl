@@ -39,6 +39,7 @@
 	$UNIX_SOCKET::q = 0;
 	$UNIX_SOCKET::children = 0;
 
+
 	while ( 1 )
 	{
 		sleep 1;
@@ -71,9 +72,9 @@
 			$SIG{USR2}= 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
-			while ( $conn = $server->accept() )
+			while ( &SERVER::accept_request() )
 			{
-				my $request = <$conn>;
+				my $request = &SERVER::fetch_request();
 				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$UNIX_SOCKET::q.'|');
 				&SERVER::call_application($request);
 				&SERVER::init_log();

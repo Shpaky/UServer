@@ -3,6 +3,7 @@
 	use 5.10.0;
 
 	use JSON;
+	use FCGI;
 	use POSIX;
 	use Fcntl qw|:flock|;
 	use Scalar::Util qw|blessed|;
@@ -42,17 +43,59 @@
 		{
 			when ('unix_socket')
 			{
-				my $pack = caller();
+				our $pack ||= caller();
 				unlink $CONFIG::path->{'socket'};
 				${$pack.'::'.'server'} = IO::Socket::UNIX->new
 				(
 					Type => SOCK_STREAM(),
 					Local => $CONFIG::path->{'socket'},
-					Listen => 1000
+					Listen => $CONFIG::listen
 				);
 				chmod 0777, $CONFIG::path->{'socket'};
 			}
 			when ('inet_socket') {1}
+			when ('fcgi')
+			{
+				our $pack ||= __PACKAGE__;
+				unlink $CONFIG::path->{'socket'};
+				my $socket = FCGI::OpenSocket($CONFIG::path->{'socket'}, $CONFIG::listen);
+				${$pack.'::'.'server'} = FCGI::Request(\*STDIN, \*STDOUT, \*STDERR, \%ENV, $socket);				## FCGI::FAIL_ACCEPT_ON_INTR
+				chmod 0777, $CONFIG::path->{'socket'};
+			}
+		}
+	}
+	sub accept_request
+	{
+		given ( $CONFIG::server )
+		{
+			when ('unix_socket')
+			{
+				${$pack.'::'.'conn'} = ${$pack.'::'.'server'}->accept();
+			}
+			when ('inet_socket') {1}
+			when ('fcgi')
+			{
+				${$pack.'::'.'server'}->Accept() >= 0;
+			}
+		}
+	}
+	sub fetch_request
+	{
+		given ( $CONFIG::server )
+		{
+			when ('unix_socket')
+			{
+		#		read ($conn, my $request, 10000);
+		#		$request =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack("c",hex($1))/ge;
+		#		$request =~ tr/+/ /;
+				my $request = <${$pack.'::'.'conn'}>;
+				return $request;
+			}
+			when ('inet_socket') {1}
+			when ('fcgi')
+			{
+				return \%ENV;
+			}
 		}
 	}
 	sub init_sig_handler
@@ -100,14 +143,24 @@
 	}
 	sub call_application
 	{
-		given ($CONFIG::navigation->{decode_json($_[0])->{'route'}})
+		if ( $CONFIG::server eq 'unix_socket' )
 		{
-			when ('HPVF')
+			given ($CONFIG::navigation->{decode_json($_[0])->{'route'}})
 			{
-				chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
-				$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
-				$SERVER::applications->{'HPVF'}->(decode_json($_[0]))
+				when ('HPVF')
+				{
+					chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
+					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
+					$SERVER::applications->{'HPVF'}->(decode_json($_[0]))
+				}
 			}
+		}
+		else
+		{
+			## fsgi
+			chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
+			$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{'test_web_invoke'}.'|'.', по запросу '.'|'.'test_web_invoke'.'|'.', процесс'.'|'.$$.'|');
+			$SERVER::applications->{'HPVF'}->($_[0]);
 		}
 	}
 	sub init_log
