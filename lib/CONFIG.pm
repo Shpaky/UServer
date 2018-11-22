@@ -18,7 +18,7 @@
 	## parameters in the this block necessary replace to adding by launch 'server.pl'
 	$prefork = 3;
 	$mode = 'combat'; 	## force || debug
-	$server = 'fcgi';	## inet_socket || unix_socket
+	$server = 'unix_socket';## inet_socket || fcgi
 	$listen = '1000';	## 1000
 
 	$signals =

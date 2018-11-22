@@ -2,6 +2,8 @@
 
 	use 5.10.0;
 
+	use Cwd qw(chdir);
+
 	use JSON;
 	use FCGI;
 	use POSIX;
@@ -71,6 +73,8 @@
 			when ('unix_socket')
 			{
 				${$pack.'::'.'conn'} = ${$pack.'::'.'server'}->accept();
+			#	return ${$pack.'::'.'conn'}->isa('IO::Socket::UNIX') ? 1 : 0;
+				return 1;
 			}
 			when ('inet_socket') {1}
 			when ('fcgi')
@@ -88,7 +92,8 @@
 		#		read ($conn, my $request, 10000);
 		#		$request =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack("c",hex($1))/ge;
 		#		$request =~ tr/+/ /;
-				my $request = <${$pack.'::'.'conn'}>;
+				my $conn = ${$pack.'::'.'conn'};
+				my $request = <$conn>;
 				return $request;
 			}
 			when ('inet_socket') {1}
@@ -151,7 +156,7 @@
 				{
 					chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
 					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
-					$SERVER::applications->{'HPVF'}->(decode_json($_[0]))
+					$SERVER::applications->{'HPVF'}->(decode_json($_[0]));
 				}
 			}
 		}
