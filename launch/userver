@@ -1,25 +1,25 @@
 #! /bin/sh
-# /etc/init.d/server-unix-socket: start the server unix socket daemon.
+# /etc/init.d/userver: start the server unix socket daemon.
 
 # chkconfig: - 88 20 20
 # description: unix socket server
 
-SERVER_HOME=/home/solenkov.v/SUNIXS/launch
+SERVER_HOME=/home/solenkov.v/UServer/launch
 SERVER_USER=root
-SERVER_SCRIPT=$SERVER_HOME/start_server_unix_socket.sh
+SERVER_SCRIPT=$SERVER_HOME/start_userver.sh
 #SERVER_CONFIG=$SERVER_HOME/config/server.properties
-SERVER_CONSOLE_LOG=/var/log/server_unix_socket/console.log
+SERVER_CONSOLE_LOG=/var/log/userver/console.log
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin
 
-prog=server-unix-socket
-DESC="server-unix-socket daemon"
+prog=userver
+DESC="userver daemon"
 
 #RETVAL=0
 STARTUP_WAIT=10
 SHUTDOWN_WAIT=10
 
-SERVER_PIDFILE=/tmp/server-unix-socket/lock
+SERVER_PIDFILE=/tmp/userver/lock
 
 
 # Source function library.

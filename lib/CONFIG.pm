@@ -5,14 +5,14 @@
 
 	$path =
 	{
-		'log_dir'	=> '/var/log/server_unix_socket',
-		'lib_dir'  	=> '/usr/lib/server-unix-socket',
-		'con_dir'	=> '/etc/server_unix_socket',
-		'conf_log'	=> '/etc/server_unix_socket/conf_log',
-		'tmp_dir' 	=> '/tmp/server-unix-socket',
-		'socket'  	=> '/tmp/server-unix-socket/socket',
-		'lock'		=> '/tmp/server-unix-socket/lock',
-		'pipe'		=> '/tmp/server-unix-socket/pipe',
+		'log_dir'	=> '/var/log/userver',
+		'lib_dir'  	=> '/usr/lib/userver',
+		'con_dir'	=> '/etc/userver',
+		'conf_log'	=> '/etc/userver/conf_log',
+		'tmp_dir' 	=> '/tmp/userver',
+		'socket'  	=> '/tmp/userver/socket',
+		'lock'		=> '/tmp/userver/lock',
+		'pipe'		=> '/tmp/userver/pipe',
 	};
 
 	## parameters in the this block necessary replace to adding by launch 'server.pl'
