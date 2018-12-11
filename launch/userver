@@ -1,13 +1,13 @@
 #! /bin/sh
-# /etc/init.d/userver: start the server unix socket daemon.
+# /etc/init.d/userver: start the universal server daemon.
 
 # chkconfig: - 88 20 20
-# description: unix socket server
+# description: universal server
 
 SERVER_HOME=/home/solenkov.v/UServer/launch
 SERVER_USER=root
 SERVER_SCRIPT=$SERVER_HOME/start_userver.sh
-#SERVER_CONFIG=$SERVER_HOME/config/server.properties
+#SERVER_CONFIG=$SERVER_HOME/config/userver.properties
 SERVER_CONSOLE_LOG=/var/log/userver/console.log
 
 PATH=/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin

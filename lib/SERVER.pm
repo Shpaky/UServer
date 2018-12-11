@@ -175,18 +175,18 @@
 	}
 	sub REAPER
 	{
-		while (( $UNIX_SOCKET::pid = waitpid(-1,WNOHANG)) > 0)
+		while (( $USERVER::pid = waitpid(-1,WNOHANG)) > 0)
 		{
-			$log->error('Уничтожен потомок, процесс сервер упал!'.'|'.$UNIX_SOCKET::pid.'|');
+			$log->error('Уничтожен потомок, процесс сервер упал!'.'|'.$USERVER::pid.'|');
 	#		last;
 		}
-		$UNIX_SOCKET::SIG{CHLD} = \&REAPER;
+		$USERVER::SIG{CHLD} = \&REAPER;
 	}
 	sub INT
 	{
 		$log->warn('Получен сигнал '.'|'.$_[0].'|'.' завершения работы сервера, процесс'.'|'.$$.'|');
 		local($SIG{CHLD}) = 'IGNORE';
-		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep { kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
+		map { delete $USERVER::childrens->{$_} and $USERVER::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep { kill_pid(2, $_) } keys %$USERVER::childrens;
 		$log->warn('Процесс сервер остановлен, процесс'.'|'.$$.'|');
 		exit;
 	}
@@ -195,7 +195,7 @@
 		my $sigset = POSIX::SigSet->new($_[0]);
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
-		$UNIX_SOCKET::SIG{CHLD} = 'IGNORE';
+		$USERVER::SIG{CHLD} = 'IGNORE';
 		&REAPER;
 
 		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
@@ -243,9 +243,9 @@
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
 		$log->warn('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');
-		$UNIX_SOCKET::SIG{CHLD} = 'IGNORE';
+		$SIG{CHLD} = 'IGNORE';
 		no CONFIG;
-		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$UNIX_SOCKET::childrens;
+		map { delete $USERVER::childrens->{$_} and $USERVER::children-- and $log->warn('Уничтожен потомок, процесс сервер завершён'.'|'.$_.'|') } grep {  kill_pid(2, $_) } keys %$USERVER::childrens;
 		use CONFIG;
 
 		sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
@@ -253,18 +253,18 @@
 	sub loop 
 	{
 		
-		if ( $UNIX_SOCKET::pid && kill_pid(0,$UNIX_SOCKET::pid) )
+		if ( $USERVER::pid && kill_pid(0,$USERVER::pid) )
 		{   	
-			$log->info('Проверка потомка, процесс чекер-соединений существует'.'|'.$UNIX_SOCKET::pid.'|');
+			$log->info('Проверка потомка, процесс чекер-соединений существует'.'|'.$USERVER::pid.'|');
 			return;
 		} 
 		else 
 		{
-			$log->warn('Проверка потомка, процесс чекер-соединений не существует!'.'|'.$UNIX_SOCKET::pid.'|');
-			if ( $UNIX_SOCKET::pid = fork() ) 
+			$log->warn('Проверка потомка, процесс чекер-соединений не существует!'.'|'.$USERVER::pid.'|');
+			if ( $USERVER::pid = fork() )
 			{ 
 
-				$log->info('Порожден потомок, процесс чекер-соединений!'.'|'.$UNIX_SOCKET::pid.'|');
+				$log->info('Порожден потомок, процесс чекер-соединений!'.'|'.$USERVER::pid.'|');
 				return; 
 			} 
 			else   
@@ -286,7 +286,7 @@
 	}
 	sub check_childs
 	{
-		map { delete $UNIX_SOCKET::childrens->{$_} and $UNIX_SOCKET::children-- and $log->error('Проверка процесса-потомка, процесс сервер не отвечает!'.'|'.$_.'|') } grep { ! kill_pid(0, $_) } keys %$UNIX_SOCKET::childrens;
+		map { delete $USERVER::childrens->{$_} and $USERVER::children-- and $log->error('Проверка процесса-потомка, процесс сервер не отвечает!'.'|'.$_.'|') } grep { ! kill_pid(0, $_) } keys %$USERVER::childrens;
 	}
 	sub get_dates
 	{

@@ -15,7 +15,7 @@
 	}
 
 	use CONFIG;
-	use CONNECTOR;
+	use SERVER;
 
-	&CONNECTOR::export_name('kill_pid','read_value_ff');
+	&SERVER::export_name('kill_pid','read_value_ff');
 	&kill_pid('USR2',&read_value_ff($CONFIG::path->{'lock'}));

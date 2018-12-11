@@ -15,12 +15,13 @@
 		'pipe'		=> '/tmp/userver/pipe',
 	};
 
-	## parameters in the this block necessary replace to adding by launch 'server.pl'
+	## parameters in the this block necessary replace to adding by launch 'userver.pl'
 	$prefork = 3;
 	$mode = 'combat'; 	## force || debug
 	$server = 'unix_socket';## inet_socket || fcgi
 	$listen = '1000';	## 1000
 
+	$handler = 'separate';	## common || separate
 	$signals =
 	{
 		'CHLD' => 'allowable',

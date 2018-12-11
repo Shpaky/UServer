@@ -13,7 +13,7 @@
 		use lib qw|lib|;
 	}
 
-	package UNIX_SOCKET;
+	package USERVER;
 
 	use feature qw|say switch|;
 
@@ -34,17 +34,17 @@
 	&SERVER::locked_open($CONFIG::path->{'lock'});
 	&SERVER::init_server();
 	&SERVER::init_sig_handler(['CHLD','INT','USR1','USR2']);
-	&SERVER::init_application();
+	$CONFIG::handler eq 'common' and &SERVER::init_application();
 
-	$UNIX_SOCKET::q = 0;
-	$UNIX_SOCKET::children = 0;
+	$USERVER::q = 0;
+	$USERVER::children = 0;
 
 
 	while ( 1 )
 	{
 		sleep 1;
 		&SERVER::check_childs;
-		for (my $i = $UNIX_SOCKET::children; $i < $CONFIG::prefork; $i++ )
+		for (my $i = $USERVER::children; $i < $CONFIG::prefork; $i++ )
 		{
 			&make_new_child();
 		}
@@ -60,8 +60,8 @@
 		{
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 			$log->info('Порождён потомок, процесс сервер!'.'|'.$pid.'|');
-			$UNIX_SOCKET::childrens->{$pid} = 1;
-			$UNIX_SOCKET::children++;
+			$USERVER::childrens->{$pid} = 1;
+			$USERVER::children++;
 			return;
 		}
 		else
@@ -72,10 +72,11 @@
 			$SIG{USR2}= 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
+			$CONFIG::handler eq 'separate' and &SERVER::init_application();
 			while ( &SERVER::accept_request() )
 			{
 				my $request = &SERVER::fetch_request();
-				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$UNIX_SOCKET::q.'|');
+				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
 				&SERVER::call_application($request);
 				&SERVER::init_log();
 			}
