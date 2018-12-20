@@ -53,5 +53,6 @@
 		'unpublish_project' => 'HPVF',
 		'check_publish_project' => 'HPVF',
 		'fetch_main_uuid_from_project' => 'HPVF',
+		'create_duplicate_subproject_for_non_drm_broadcasting' => 'HPVF',
 	};
 1;
