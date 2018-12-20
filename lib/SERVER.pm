@@ -150,13 +150,19 @@
 	{
 		if ( $CONFIG::server eq 'unix_socket' )
 		{
-			given ($CONFIG::navigation->{decode_json($_[0])->{'route'}})
+			given ( $CONFIG::navigation->{eval{eval("$_[0];")->{'route'}} or eval{decode_json($_[0])->{'route'}}})
 			{
 				when ('HPVF')
 				{
 					chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
 					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
 					$SERVER::applications->{'HPVF'}->(decode_json($_[0]));
+				}
+				when ('Statistic')
+				{
+					chdir($CONFIG::applications->{'Statistic'}->{'catalog'});
+					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{$request->{'route'}}.'|'.', по запросу '.'|'.$request->{'route'}.'|'.', процесс'.'|'.$$.'|');
+					$SERVER::applications->{'Statistic'}->($request);
 				}
 			}
 		}

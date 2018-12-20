@@ -21,7 +21,7 @@
 	$server = 'unix_socket';## inet_socket || fcgi
 	$listen = '1000';	## 1000
 
-	$handler = 'separate';	## common || separate
+	$handler = 'common';	## common || separate
 	$signals =
 	{
 		'CHLD' => 'allowable',
@@ -32,13 +32,20 @@
 
 	$applications =
 	{
-		'HPVF'	=>
+	#	'HPVF'	=>
+	#	{
+	#		'module' => 'ROUTING',
+	#		'method' => 'navigation',
+	#		'catalog'=> '/home/solenkov.v/NHPVF',
+	#		'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
+	#	},
+		'Statistic' =>
 		{
-			'module' => 'ROUTING',
+			'module' => 'Routing',
 			'method' => 'navigation',
-			'catalog'=> '/home/solenkov.v/NHPVF',
-			'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
-		},
+			'catalog'=> '/home/solenkov.v/Statistics',
+			'libraly'=> '/home/solenkov.v/Statistics/Statistic',
+		}
 	};
 
 	$navigation =
@@ -54,5 +61,6 @@
 		'check_publish_project' => 'HPVF',
 		'fetch_main_uuid_from_project' => 'HPVF',
 		'create_duplicate_subproject_for_non_drm_broadcasting' => 'HPVF',
+		'insert_stat' => 'Statistic',
 	};
 1;
