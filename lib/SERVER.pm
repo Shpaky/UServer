@@ -361,4 +361,16 @@
 
 		return $v;
 	}
+	sub check_apps_mode
+	{
+		state $apps_m = $CONFIG::apps_m eq 'multiple' ? 1 : 0;
+
+		return $apps_m;
+	}
+	sub check_hand_type
+	{
+		state $hand_t = $CONFIG::handler eq 'common' ? 1 : 0;
+
+		return $hand_t;
+	}
 	1;

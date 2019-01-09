@@ -32,7 +32,7 @@
 	&SERVER::locked_open($CONFIG::path->{'lock'});
 	&SERVER::init_server();
 	&SERVER::init_sig_handler(['CHLD','INT','USR1','USR2']);
-	$CONFIG::handler eq 'common' and &SERVER::init_application();
+	&SERVER::check_hand_type() and &SERVER::init_application();
 
 	$USERVER::q = 0;
 	$USERVER::children = 0;
@@ -70,13 +70,13 @@
 			$SIG{USR2}= 'DEFAULT';
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
-			$CONFIG::handler eq 'separate' and &SERVER::init_application();
+			&SERVER::check_hand_type() or &SERVER::init_application();
 			while ( &SERVER::accept_request() )
 			{
 				my $request = &SERVER::fetch_request();
 				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
 				&SERVER::call_application($request);
-				$CONFIG::apps_m eq 'multiple' and &SERVER::init_log();
+				&SERVER::check_apps_mode() and &SERVER::init_log();
 			}
 		}
 	}
