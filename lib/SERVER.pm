@@ -119,7 +119,8 @@
 			(
 			  &SERVER::connect_module($CONFIG::applications->{$_}) and
 			  lc(ref(\&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
-			  $SERVER::applications->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}}
+			  $SERVER::applications->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}} and
+			  $CONFIG::apps_m eq 'single' and chdir($CONFIG::applications->{$_}->{'catalog'})
 			)
 			? ( $log->info('Приложение '.'|'.$_.'|'.' подключено, процесс'.'|'.$$.'|') )
 			: ( $log->warn('Не удалось подлючить приложение '.'|'.$_.'|'.', процесс'.'|'.$$.'|') )
@@ -150,17 +151,17 @@
 	{
 		if ( $CONFIG::server eq 'unix_socket' )
 		{
-			given ( $CONFIG::navigation->{eval{eval("$_[0];")->{'route'}} or eval{decode_json($_[0])->{'route'}}})
+			given ( $CONFIG::navigation->{eval{eval("$_[0];")->{'route'}} or eval{decode_json($_[0])->{'route'}}} )
 			{
 				when ('HPVF')
 				{
-					chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
+					$CONFIG::apps_m eq 'multiple' and chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
 					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{decode_json($_[0])->{'route'}}.'|'.', по запросу '.'|'.decode_json($_[0])->{'route'}.'|'.', процесс'.'|'.$$.'|');
 					$SERVER::applications->{'HPVF'}->(decode_json($_[0]));
 				}
 				when ('Statistic')
 				{
-					chdir($CONFIG::applications->{'Statistic'}->{'catalog'});
+					$CONFIG::apps_m eq 'multiple' and chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
 					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{$request->{'route'}}.'|'.', по запросу '.'|'.$request->{'route'}.'|'.', процесс'.'|'.$$.'|');
 					$SERVER::applications->{'Statistic'}->($request);
 				}

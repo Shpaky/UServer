@@ -16,10 +16,11 @@
 	};
 
 	## parameters in the this block necessary replace to adding by launch 'userver.pl'
-	$prefork = 3;
+	$prefork = 12;
 	$mode = 'combat'; 	## force || debug
 	$server = 'unix_socket';## inet_socket || fcgi
 	$listen = '1000';	## 1000
+	$apps_m = 'single';	## multiple
 
 	$handler = 'common';	## common || separate
 	$signals =

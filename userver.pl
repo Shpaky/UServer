@@ -15,8 +15,6 @@
 
 	package USERVER;
 
-	use feature qw|say switch|;
-
 	use Getopt::Long;
 	use Data::Dumper;	
 	use SERVER;
@@ -78,7 +76,7 @@
 				my $request = &SERVER::fetch_request();
 				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
 				&SERVER::call_application($request);
-				&SERVER::init_log();
+				$CONFIG::apps_m eq 'multiple' and &SERVER::init_log();
 			}
 		}
 	}
