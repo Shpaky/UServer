@@ -120,7 +120,7 @@
 			  &SERVER::connect_module($CONFIG::applications->{$_}) and
 			  lc(ref(\&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}})) eq 'code' and
 			  $SERVER::applications->{$_} = \&{$CONFIG::applications->{$_}->{'module'}.'::'.$CONFIG::applications->{$_}->{'method'}} and
-			  $CONFIG::apps_m eq 'single' and chdir($CONFIG::applications->{$_}->{'catalog'})
+			  $CONFIG::apps_m eq 'single' ? chdir($CONFIG::applications->{$_}->{'catalog'}) : 1
 			)
 			? ( $log->info('Приложение '.'|'.$_.'|'.' подключено, процесс'.'|'.$$.'|') )
 			: ( $log->warn('Не удалось подлючить приложение '.'|'.$_.'|'.', процесс'.'|'.$$.'|') )
