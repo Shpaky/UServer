@@ -199,7 +199,7 @@
 	}
 	sub CHLD
 	{
-		my $sigset = POSIX::SigSet->new($_[0]);
+		state $sigset ||= POSIX::SigSet->new($_[0]);
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
 		$USERVER::SIG{CHLD} = 'IGNORE';
@@ -209,7 +209,7 @@
 	}
 	sub USR1
 	{
-		$_[1] > 0 || ( my $sigset = POSIX::SigSet->new($_[0]) and sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n" );
+		$_[1] > 0 || ( state $sigset ||= POSIX::SigSet->new($_[0]) and sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n" );
 
 		local $SIG{PIPE} = &PIPE;
 		$_[1] > 0 || $log->info('Получен сигнал от мониторинга, процесс'.'|'.$$.'|');
@@ -218,6 +218,7 @@
 			if ( &write_pipe($CONFIG::path->{'pipe'},time) )
 			{
 				$log->info('Отправлен ответ на запрос от мониторинга, процесс'.'|'.$$.'|');
+				sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
 			}
 			else
 			{
@@ -234,6 +235,7 @@
 			else
 			{
 				$log->error('Не удалось создать именованный канал '.'|'.$CONFIG::path->{'pipe'}.'|'.', процесс'.'|'.$$.'|');
+				sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать '$_[0]' для обработчика: $!\n";
 			}
 		}
 
@@ -246,7 +248,7 @@
 	}
 	sub USR2
 	{
-		my $sigset = POSIX::SigSet->new($_[0]);
+		state $sigset ||= POSIX::SigSet->new($_[0]);
 		sigprocmask(SIG_BLOCK, $sigset) or die "Не удалось заблокировать '$_[0]' для обработчика: $!\n";
 
 		$log->warn('Получен сигнал об изменении конфигурации сервера, процесс'.'|'.$$.'|');

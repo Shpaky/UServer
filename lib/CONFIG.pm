@@ -16,11 +16,11 @@
 	};
 
 	## parameters in the this block necessary replace to adding by launch 'userver.pl'
-	$prefork = 12;
+	$prefork = 3;
 	$mode = 'combat'; 	## force || debug
 	$server = 'unix_socket';## inet_socket || fcgi
 	$listen = '1000';	## 1000
-	$apps_m = 'single';	## multiple
+	$apps_m = 'multiple';	## multiple
 
 	$handler = 'common';	## common || separate
 	$signals =
@@ -33,13 +33,13 @@
 
 	$applications =
 	{
-	#	'HPVF'	=>
-	#	{
-	#		'module' => 'ROUTING',
-	#		'method' => 'navigation',
-	#		'catalog'=> '/home/solenkov.v/NHPVF',
-	#		'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
-	#	},
+		'HPVF'	=>
+		{
+			'module' => 'ROUTING',
+			'method' => 'navigation',
+			'catalog'=> '/home/solenkov.v/NHPVF',
+			'libraly'=> '/home/solenkov.v/NHPVF/HPVF'
+		},
 		'Statistic' =>
 		{
 			'module' => 'Routing',
@@ -62,6 +62,7 @@
 		'check_publish_project' => 'HPVF',
 		'fetch_main_uuid_from_project' => 'HPVF',
 		'create_duplicate_subproject_for_non_drm_broadcasting' => 'HPVF',
+		're_assemble_info_xml_by_project_of_type_multiple' => 'HPVF',
 		'insert_stat' => 'Statistic',
 	};
 1;
