@@ -19,8 +19,8 @@
 	$prefork = 3;
 	$mode = 'combat'; 	## force || debug
 	$server = 'unix_socket';## inet_socket || fcgi
-	$listen = '1000';	## 1000
-	$apps_m = 'multiple';	## multiple
+	$listen = '1000';	## size socket queue
+	$apps_m = 'multiple';	## multiple || single
 
 	$handler = 'common';	## common || separate
 	$signals =
