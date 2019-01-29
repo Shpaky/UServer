@@ -63,6 +63,7 @@
 		'fetch_main_uuid_from_project' => 'HPVF',
 		'create_duplicate_subproject_for_non_drm_broadcasting' => 'HPVF',
 		're_assemble_info_xml_by_project_of_type_multiple' => 'HPVF',
+		're_assemble_ism_mnfst_by_project_of_type_multiple' => 'HPVF',
 		'insert_stat' => 'Statistic',
 	};
 1;
