@@ -25,9 +25,9 @@
 	Log::Any::Adapter->set('+Adapter');
 	use Log::Any '$log';
 
-
 	my $result = GetOptions ( 'debug|d+' => \$d, 'check|c:i' => \$cc, ) or die;
 
+	&SERVER::init_log();
 
 	&SERVER::locked_open($CONFIG::path->{'lock'});
 	&SERVER::init_server();
