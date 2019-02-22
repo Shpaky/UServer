@@ -1,4 +1,4 @@
-#!/usr/lib/perl
+#!/usr/bin/perl
 
 	package CONFIG;
 
