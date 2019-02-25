@@ -161,7 +161,7 @@
 				}
 				when ('Statistic')
 				{
-					$CONFIG::apps_m eq 'multiple' and chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
+					$CONFIG::apps_m eq 'multiple' and chdir($CONFIG::applications->{'Statistic'}->{'catalog'});
 					$log->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{$request->{'route'}}.'|'.', по запросу '.'|'.$request->{'route'}.'|'.', процесс'.'|'.$$.'|');
 					$SERVER::applications->{'Statistic'}->($request);
 				}

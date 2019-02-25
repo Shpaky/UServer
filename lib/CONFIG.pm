@@ -9,6 +9,8 @@
 		'lib_dir'  	=> '/usr/lib/userver',
 		'con_dir'	=> '/etc/userver',
 		'conf_log'	=> '/etc/userver/conf_log',
+		'run_dir' 	=> '/var/run/userver',
+		'socket'	=> '/var/run/userver/socket',
 		'tmp_dir' 	=> '/tmp/userver',
 		'socket'  	=> '/tmp/userver/socket',
 		'lock'		=> '/tmp/userver/lock',
