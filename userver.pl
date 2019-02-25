@@ -21,18 +21,17 @@
 	use CONFIG;
 	use POSIX;
 
-	use Log::Any::Adapter;
-	Log::Any::Adapter->set('+Adapter');
-	use Log::Any '$log';
 
 	my $result = GetOptions ( 'debug|d+' => \$d, 'check|c:i' => \$cc, ) or die;
 
 	&SERVER::init_log();
+	&SERVER::get_logs();
 
 	&SERVER::locked_open($CONFIG::path->{'lock'});
 	&SERVER::init_server();
 	&SERVER::init_sig_handler(['CHLD','INT','USR1','USR2']);
 	&SERVER::check_hand_type() and &SERVER::init_application();
+
 
 	$USERVER::q = 0;
 	$USERVER::children = 0;
@@ -57,7 +56,7 @@
 		if ($pid)
 		{
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
-			$log->info('Порождён потомок, процесс сервер!'.'|'.$pid.'|');
+			$logger->info('Порождён потомок, процесс сервер!'.'|'.$pid.'|');
 			$USERVER::childrens->{$pid} = 1;
 			$USERVER::children++;
 			return;
@@ -74,7 +73,7 @@
 			while ( &SERVER::accept_request() )
 			{
 				my $request = &SERVER::fetch_request();
-				$log->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
+				$logger->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
 				&SERVER::call_application($request);
 				&SERVER::check_apps_mode() and &SERVER::init_log();
 			}

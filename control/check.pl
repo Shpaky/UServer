@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 	
+	package CHECKER;
+
 	use 5.010;
 	BEGIN
 	{	my $q;
@@ -18,9 +20,8 @@
 	use CONFIG;
 	use Getopt::Long;
 
-	use Log::Any::Adapter;
-	Log::Any::Adapter->set('+Adapter');
-	use Log::Any '$log';
+	our $log;
+	our $not;
 
 
 	my $result = GetOptions ( 'check|c=s' => \$check, 'debug|d+' => \$d, 'timeout=i' => \$timeout ) or die;
@@ -31,6 +32,9 @@
 	
 	sub check_server
 	{
+		&SERVER::init_log();
+		&SERVER::get_logs();
+
 		my $pipe = $CONFIG::path->{'pipe'};
 		my $lock = $CONFIG::path->{'lock'};
 		
@@ -50,7 +54,10 @@
 					$resp = <STDIN>;
 					unless ( $resp ) 
 					{
-						$log->notice('Не удалось получить ответ на канал '.'|'.$CONFIG::path->{'pipe'}.'|'.' от процесса'.'|'.$pid.'|');
+						my $txt_1 = 'Не удалось получить ответ на канал ';
+						my $txt_2 = ' от процесса';
+
+						$notice->warn($txt_1.'|'.$CONFIG::path->{'pipe'}.'|'.$txt_2.'|'.$pid.'|');
 					}
 					if ( $d )
 					{
@@ -69,13 +76,15 @@
 			}
 			else
 			{
-				$log->notice('Не удалось отправить сигнал на процесс'.'|'.$pid.'|');
+				my $txt = 'Не удалось отправить сигнал на процесс';
+				$notice->warn($txt.'|'.$pid.'|');
 				say 0;
 			}
 		}
 		else
 		{
-			$log->notice('Не найден pid-файл'.'|'.$CONFIG::path->{'lock'}.'|');
+			my $txt = 'Не найден pid-файл';
+			$notice->warn($pid.'|'.$CONFIG::path->{'lock'}.'|');
 			say 0;
 		} 
 	}

@@ -33,6 +33,28 @@
 		'USR2' => 'allowable'
 	};
 
+	$logs =
+	{
+		'SERVER' =>
+		{
+			'logger' => 'USSimpleLog',
+			'notice' => 'USNoticeLog',
+		},
+		'USERVER'=>
+		{
+			'logger' => 'USSimpleLog',
+			'notice' => 'USNoticeLog',
+		},
+		'CHECKER'=>
+		{
+			'notice' => 'USCheckLog',
+		},
+		'CUSTOM' =>
+		{
+			'logger' => 'CustomLog',
+		}
+	};
+
 	$applications =
 	{
 		'HPVF'	=>
