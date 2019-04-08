@@ -19,7 +19,7 @@ DESC="userver daemon"
 STARTUP_WAIT=10
 SHUTDOWN_WAIT=10
 
-SERVER_PIDFILE=/tmp/userver/lock
+SERVER_PIDFILE=/var/run/userver/lock
 
 
 # Source function library.
