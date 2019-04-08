@@ -11,10 +11,12 @@
 		'conf_log'	=> '/etc/userver/conf_log',
 		'run_dir' 	=> '/var/run/userver',
 		'socket'	=> '/var/run/userver/socket',
+		'lock'		=> '/var/run/userver/lock',
+		'pipe'		=> '/var/run/userver/pipe',
 		'tmp_dir' 	=> '/tmp/userver',
 		'socket'  	=> '/tmp/userver/socket',
 		'lock'		=> '/tmp/userver/lock',
-		'pipe'		=> '/tmp/userver/pipe',
+		'pipe'		=> '/tmp/userver/pipe'
 	};
 
 	## parameters in the this block necessary replace to adding by launch 'userver.pl'
