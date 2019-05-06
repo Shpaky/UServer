@@ -16,8 +16,8 @@ prog=userver
 DESC="userver daemon"
 
 #RETVAL=0
-STARTUP_WAIT=10
-SHUTDOWN_WAIT=10
+STARTUP_WAIT=5
+SHUTDOWN_WAIT=5
 
 SERVER_PIDFILE=/var/run/userver/lock
 
