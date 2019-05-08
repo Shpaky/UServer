@@ -20,8 +20,8 @@
 	use CONFIG;
 	use Getopt::Long;
 
-	our $log;
-	our $not;
+	our $logger;
+	our $notice;
 
 
 	my $result = GetOptions ( 'check|c=s' => \$check, 'debug|d+' => \$d, 'timeout=i' => \$timeout ) or die;
@@ -33,11 +33,12 @@
 	sub check_server
 	{
 		&SERVER::init_log();
-		&SERVER::get_logs();
+		&SERVER::notice();
 
 		my $pipe = $CONFIG::path->{'pipe'};
 		my $lock = $CONFIG::path->{'lock'};
-		
+
+
 		if ( my $pid = &read_value_ff($lock) ) 
 		{
 			say $pid;
@@ -84,7 +85,7 @@
 		else
 		{
 			my $txt = 'Не найден pid-файл';
-			$notice->warn($pid.'|'.$CONFIG::path->{'lock'}.'|');
+			$notice->warn($txt.'|'.$CONFIG::path->{'lock'}.'|');
 			say 0;
 		} 
 	}
