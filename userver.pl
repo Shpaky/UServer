@@ -63,10 +63,7 @@
 		}
 		else
 		{
-			$SIG{INT} = 'DEFAULT';
-			$SIG{CHLD}= 'DEFAULT';
-			$SIG{USR1}= 'DEFAULT';
-			$SIG{USR2}= 'DEFAULT';
+			&SERVER::reset_sig_handler(['CHLD','INT','USR1','USR2']);
 			sigprocmask(SIG_UNBLOCK, $sigset) or die "Не удалось разблокировать 'SIGINT' для форка: $!\n";
 
 			&SERVER::check_hand_type() or &SERVER::init_application();

@@ -107,6 +107,11 @@
 		my $pack = caller();
 		map { $SIG{$_} = \&{'SERVER'.'::'.$_} } grep { &check_allowable_signals($_) } @{$_[0]};
 	}
+	sub reset_sig_handler
+	{
+		my $pack = caller();
+		map { $SIG{$_} = 'DEFAULT' } grep { &check_allowable_signals($_) } @{$_[0]};
+	}
 	sub check_allowable_signals
 	{
 		return $CONFIG::signals->{$_[0]};
