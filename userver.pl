@@ -72,7 +72,6 @@
 				my $request = &SERVER::fetch_request();
 				$logger->info('Принят запрос, процесс '.'|'.$$.'|'.', запрос '.'|'.++$USERVER::q.'|');
 				&SERVER::call_application($request);
-				&SERVER::check_apps_mode() and &SERVER::init_log();
 			}
 		}
 	}

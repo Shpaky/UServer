@@ -182,7 +182,7 @@
 	sub init_log
 	{
 		my $log = -f $_[0] ? shift : $CONFIG::path->{'conf_log'};
-		Log::Log4perl->init($log,$_[0]);
+		Log::Log4perl->init($log);
 	}
 	sub get_logs
 	{
@@ -420,7 +420,7 @@
 	}
 	sub check_apps_mode
 	{
-		state $apps_m = $CONFIG::apps_m eq 'multiple' ? 1 : 0;
+		state $apps_m ||= $CONFIG::apps_m eq 'multiple' ? 1 : 0;
 
 		return $apps_m;
 	}
