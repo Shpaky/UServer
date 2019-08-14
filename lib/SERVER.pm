@@ -426,7 +426,7 @@
 	}
 	sub check_hand_type
 	{
-		state $hand_t = $CONFIG::handler eq 'common' ? 1 : 0;
+		state $hand_t ||= $CONFIG::handler eq 'common' ? 1 : 0;
 
 		return $hand_t;
 	}
