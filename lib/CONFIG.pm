@@ -72,6 +72,13 @@
 			'method' => 'navigation',
 			'catalog'=> '/home/solenkov.v/Statistics',
 			'libraly'=> '/home/solenkov.v/Statistics/Statistic',
+		},
+		'Palace' =>
+		{
+			'module' => 'Routing',
+			'method' => 'navigation',
+			'catalog'=> '/home/solenkov.v/WE',
+			'libraly'=> '/home/solenkov.v/WE/Palace'
 		}
 	};
 

@@ -174,9 +174,9 @@
 		else
 		{
 			## fsgi
-			chdir($CONFIG::applications->{'HPVF'}->{'catalog'});
-			$logger->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{'test_web_invoke'}.'|'.', по запросу '.'|'.'test_web_invoke'.'|'.', процесс'.'|'.$$.'|');
-			$SERVER::applications->{'HPVF'}->($_[0]);
+			chdir($CONFIG::applications->{'Palace'}->{'catalog'});
+			$logger->info('Выполнена маршрутизация на приложение '.'|'.$CONFIG::navigation->{$_[0]->{'REQUEST_URI'}}.'|'.', по запросу '.'|'.$_[0]->{'REQUEST_URI'}.'|'.', процесс'.'|'.$$.'|');
+			$SERVER::applications->{'Palace'}->($_[0]);
 		}
 	}
 	sub init_log
