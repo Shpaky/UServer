@@ -88,10 +88,10 @@
 		{
 			when ('unix_socket')
 			{
+				my $conn = ${$pack.'::'.'conn'};
 		#		read ($conn, my $request, 10000);
 		#		$request =~ s/%([0-9A-Fa-f][0-9A-Fa-f])/pack("c",hex($1))/ge;
 		#		$request =~ tr/+/ /;
-				my $conn = ${$pack.'::'.'conn'};
 				my $request = <$conn>;
 				return $request;
 			}
