@@ -3,8 +3,8 @@
 =======================================
 
 *******************************************
-** support mode: unix socket|inet socket **
-** support protocol: custom|fastcgi      **
+** support modes: unix socket|inet socket **
+** support protocols: custom|fastcgi      **
 *******************************************
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
